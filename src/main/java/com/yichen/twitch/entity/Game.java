@@ -19,7 +19,7 @@ public class Game {
     @JsonProperty("box_art_url")
     private final String boxArtUrl;
 
-    public Game(Builder builder) {
+    private Game(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.boxArtUrl = builder.boxArtUrl;
