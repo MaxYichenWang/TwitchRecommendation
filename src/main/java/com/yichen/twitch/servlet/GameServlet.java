@@ -2,6 +2,8 @@ package com.yichen.twitch.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yichen.twitch.entity.Game;
+import com.yichen.twitch.external.TwitchClient;
+import com.yichen.twitch.external.TwitchException;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -12,19 +14,22 @@ import java.io.IOException;
 public class GameServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        ObjectMapper mapper = new ObjectMapper();
-        Game game = new Game.Builder()
-                .id("12924")
-                .name("World of Warcraft")
-                .boxArtUrl("[San Francisco](https://static-cdn.jtvnw.net/ttv-boxart/Warcraft%20III-{width}x{height}.jpg)")
-                .build();
+        // Get gameName from request URL.
+        String gameName = request.getParameter("game_name");
+        TwitchClient client = new TwitchClient();
 
-        response.getWriter().print(mapper.writeValueAsString(game));
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Let the client know the returned data is in JSON format.
+        response.setContentType("application/json;charset=UTF-8");
+        try {
+            // Return the dedicated game information if gameName is provided in the request URL, otherwise return the top x games.
+            if (gameName != null) {
+                response.getWriter().print(new ObjectMapper().writeValueAsString(client.searchGame(gameName)));
+            } else {
+                response.getWriter().print(new ObjectMapper().writeValueAsString(client.topGames(0)));
+            }
+        } catch (TwitchException e) {
+            throw new ServletException(e);
+        }
 
     }
 }

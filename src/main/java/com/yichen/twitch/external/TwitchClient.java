@@ -10,6 +10,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yichen.twitch.entity.Game;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class TwitchClient {
@@ -69,4 +74,34 @@ public class TwitchClient {
             }
         }
     }
+
+    // Convert JSON format data returned from Twitch to an Arraylist of Game objects
+    private List<Game> getGameList(String data) throws TwitchException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return Arrays.asList(mapper.readValue(data, Game[].class));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new TwitchException("Failed to parse game data from Twitch API");
+        }
+    }
+
+    // Integrate search() and getGameList() together, returns the top x popular games from Twitch.
+    public List<Game> topGames(int limit) throws TwitchException {
+        if (limit <= 0) {
+            limit = DEFAULT_GAME_LIMIT;
+        }
+        return getGameList(searchTwitch(buildGameURL(TOP_GAME_URL, "", limit)));
+    }
+
+    // Integrate search() and getGameList() together, returns the dedicated game based on the game name.
+    public Game searchGame(String gameName) throws TwitchException {
+        List<Game> gameList = getGameList(searchTwitch(buildGameURL(GAME_SEARCH_URL_TEMPLATE, gameName, 0)));
+        if (gameList.size() != 0) {
+            return gameList.get(0);
+        }
+        return null;
+    }
+
+
 }
