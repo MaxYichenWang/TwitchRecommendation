@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonDeserialize(builder =  User.Builder.class)
+@JsonDeserialize(builder =  Item.Builder.class)
 public class Item {
     @JsonProperty("id")
     private final String id;
@@ -63,6 +63,20 @@ public class Item {
         return type;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    public void setType(ItemType type) {
+        this.type = type;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static final class Builder {
         @JsonProperty("id")
         private String id;
