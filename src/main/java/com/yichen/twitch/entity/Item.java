@@ -1,5 +1,6 @@
 package com.yichen.twitch.entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,12 +17,13 @@ public class Item {
     @JsonProperty("thumbnail_url")
     private final String thumbnailUrl;
     @JsonProperty("broadcaster_name")
+    @JsonAlias({ "user_name" })
     private String broadcasterName;
     @JsonProperty("url")
     private String url;
     @JsonProperty("game_id")
     private String gameId;
-    @JsonProperty("Item_type")
+    @JsonProperty("item_type")
     private ItemType type;
 
     private Item(Builder builder) {
@@ -63,16 +65,19 @@ public class Item {
         return type;
     }
 
-    public void setUrl(String url) {
+    public Item setUrl(String url) {
         this.url = url;
+        return this;
     }
 
-    public void setGameId(String gameId) {
+    public Item setGameId(String gameId) {
         this.gameId = gameId;
+        return this;
     }
 
-    public void setType(ItemType type) {
+    public Item setType(ItemType type) {
         this.type = type;
+        return this;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -85,12 +90,13 @@ public class Item {
         @JsonProperty("thumbnail_url")
         private String thumbnailUrl;
         @JsonProperty("broadcaster_name")
+        @JsonAlias({ "user_name" })
         private String broadcasterName;
         @JsonProperty("url")
         private String url;
         @JsonProperty("game_id")
         private String gameId;
-        @JsonProperty("Item_type")
+        @JsonProperty("item_type")
         private ItemType type;
 
         public Builder id(String id) {
